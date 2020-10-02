@@ -91,9 +91,8 @@ namespace Lab1
                 TryParseLine(line, out strs);
                 if (strs.Length == 1)
                 {
-                    data[section] = ParametersValues;
-                    ParametersValues = new Dictionary<string, string>();
                     section = strs[0];
+                    data[section] = new Dictionary<string, string>();
                 }
 
                 if (strs.Length == 2)
@@ -104,7 +103,7 @@ namespace Lab1
                     }
                     else
                     {
-                        ParametersValues[strs[0]] = strs[1];
+                        data[section][strs[0]] = strs[1];
                     }
                 }
             }
