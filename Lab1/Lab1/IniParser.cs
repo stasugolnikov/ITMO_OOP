@@ -53,7 +53,10 @@ namespace Lab1
             {
                 if (words[0].StartsWith('[') && words[0].EndsWith(']'))
                 {
-                    if (CheckValidSection(words[0])) strs = words;
+                    if (CheckValidSection(words[0]))
+                    {
+                        strs = words;
+                    }
                     else
                     {
                         // throw
@@ -83,7 +86,6 @@ namespace Lab1
 
             var file = new StreamReader(FilePath);
             string line;
-            var ParametersValues = new Dictionary<string, string>();
             string section = "";
             while ((line = file.ReadLine()) != null)
             {
@@ -107,8 +109,6 @@ namespace Lab1
                     }
                 }
             }
-
-            data[section] = ParametersValues;
             file.Close();
         }
     }
