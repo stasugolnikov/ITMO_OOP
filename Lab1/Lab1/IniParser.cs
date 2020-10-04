@@ -49,67 +49,90 @@ namespace Lab1
             string[] words = line.Split(new[] {' ', '='}, StringSplitOptions.RemoveEmptyEntries);
             strs = new string[] { };
 
+            if (words.Length == 0) return;
+
             if (words.Length == 1)
             {
-                if (words[0].StartsWith('[') && words[0].EndsWith(']'))
+                if (CheckValidSection(words[0]))
                 {
-                    if (CheckValidSection(words[0]))
-                    {
-                        strs = words;
-                    }
-                    else
-                    {
-                        // throw
-                    }
+                    strs = words;
+                    return;
+                }
+                else
+                {
+                    throw new InvalidSectionException("Invalid section: " + words[0]);
                 }
             }
 
             if (words.Length == 2)
             {
-                if (CheckValidParameter(words[0]) && CheckValidValue(words[1]))
+                if (CheckValidParameter(words[0]))
                 {
-                    strs = words;
+                    if (CheckValidValue(words[1]))
+                    {
+                        strs = words;
+                        return;
+                    }
+                    else
+                    {
+                        throw new InvalidValueException("Invalid value: " + words[1]);
+                    }
                 }
                 else
                 {
-                    // throw
+                    throw new InvalidParameterException("Invalid Parameter: " + words[0]);
                 }
             }
+
+            throw new InvalidLineException("Invalid line: " + line);
         }
 
         public void ParseIniFile()
         {
-            if (!File.Exists(FilePath))
+            try
             {
-                //throw ex
-            }
-
-            var file = new StreamReader(FilePath);
-            string line;
-            string section = "";
-            while ((line = file.ReadLine()) != null)
-            {
-                string[] strs;
-                TryParseLine(line, out strs);
-                if (strs.Length == 1)
+                if (!File.Exists(FilePath))
                 {
-                    section = strs[0];
-                    data[section] = new Dictionary<string, string>();
+                    throw new FileNotFoundException("Unable to find the file: " + FilePath);
                 }
 
-                if (strs.Length == 2)
+                if (Path.GetExtension(FilePath) != ".ini")
                 {
-                    if (String.IsNullOrEmpty(section))
+                    throw new InvalidFileTypeException("File tyoe must be .ini, not " + Path.GetExtension(FilePath));
+                }
+                
+                var file = new StreamReader(FilePath);
+                string line;
+                string section = "";
+                while ((line = file.ReadLine()) != null)
+                {
+                    string[] strs;
+                    TryParseLine(line, out strs);
+                    if (strs.Length == 1)
                     {
-                        // throw
+                        section = strs[0].Substring(1, strs[0].Length - 2);
+                        data[section] = new Dictionary<string, string>();
                     }
-                    else
+
+                    if (strs.Length == 2)
                     {
-                        data[section][strs[0]] = strs[1];
+                        if (String.IsNullOrEmpty(section))
+                        {
+                            throw new InvalidSectionException("Section must be non-empty string");
+                        }
+                        else
+                        {
+                            data[section][strs[0]] = strs[1];
+                        }
                     }
                 }
+
+                file.Close();
             }
-            file.Close();
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
