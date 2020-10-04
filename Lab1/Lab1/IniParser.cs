@@ -7,12 +7,10 @@ namespace Lab1
 {
     public class IniParser
     {
-        private string FilePath;
         private Dictionary<string, Dictionary<string, string>> data;
 
-        public IniParser(string path)
+        public IniParser()
         {
-            this.FilePath = path;
             this.data = new Dictionary<string, Dictionary<string, string>>();
         }
 
@@ -27,13 +25,13 @@ namespace Lab1
 
         private bool CheckValidSection(string str)
         {
-            Regex regex = new Regex(@"^\[\w+\]$");
+            Regex regex = new Regex(@"^\[\w+\]+$");
             return regex.IsMatch(str);
         }
 
         private bool CheckValidParameter(string str)
         {
-            Regex regex = new Regex(@"^[\w]+$");
+            Regex regex = new Regex(@"^\w+$");
             return regex.IsMatch(str);
         }
 
@@ -51,43 +49,22 @@ namespace Lab1
 
             if (words.Length == 0) return;
 
-            if (words.Length == 1)
+            if (words.Length == 1 && CheckValidSection(words[0]))
             {
-                if (CheckValidSection(words[0]))
-                {
-                    strs = words;
-                    return;
-                }
-                else
-                {
-                    throw new InvalidSectionException("Invalid section: " + words[0]);
-                }
+                strs = words;
+                return;
             }
 
-            if (words.Length == 2)
+            if (words.Length == 2 && CheckValidParameter(words[0]) && CheckValidValue(words[1]))
             {
-                if (CheckValidParameter(words[0]))
-                {
-                    if (CheckValidValue(words[1]))
-                    {
-                        strs = words;
-                        return;
-                    }
-                    else
-                    {
-                        throw new InvalidValueException("Invalid value: " + words[1]);
-                    }
-                }
-                else
-                {
-                    throw new InvalidParameterException("Invalid Parameter: " + words[0]);
-                }
+                strs = words;
+                return;
             }
 
-            throw new InvalidLineException("Invalid line: " + line);
+            throw new InvalidFormatException("Ini file format error in line: " + words[0]);
         }
 
-        public void ParseIniFile()
+        public void ParseIniFile(string FilePath)
         {
             try
             {
@@ -98,16 +75,15 @@ namespace Lab1
 
                 if (Path.GetExtension(FilePath) != ".ini")
                 {
-                    throw new InvalidFileTypeException("File tyoe must be .ini, not " + Path.GetExtension(FilePath));
+                    throw new InvalidFileTypeException("File type must be .ini, not " + Path.GetExtension(FilePath));
                 }
-                
+
                 var file = new StreamReader(FilePath);
                 string line;
                 string section = "";
                 while ((line = file.ReadLine()) != null)
                 {
-                    string[] strs;
-                    TryParseLine(line, out strs);
+                    TryParseLine(line, out string[] strs);
                     if (strs.Length == 1)
                     {
                         section = strs[0].Substring(1, strs[0].Length - 2);
@@ -118,7 +94,7 @@ namespace Lab1
                     {
                         if (String.IsNullOrEmpty(section))
                         {
-                            throw new InvalidSectionException("Section must be non-empty string");
+                            throw new InvalidFormatException("Ini file format error");
                         }
                         else
                         {
@@ -126,13 +102,43 @@ namespace Lab1
                         }
                     }
                 }
-
-                file.Close();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private void TryGetValue(string section, string parameter, out string ans)
+        {
+            try
+            {
+                ans = data[section][parameter];
+            }
+            catch (Exception)
+            {
+                ans = default;
+                throw new UnknownPairException("Pair '" + section + "' '" + parameter + "' does not exists");
+            }
+        }
+
+        public T Get<T>(string section, string parameter)
+        {
+            try
+            {
+                TryGetValue(section, parameter, out string val);
+                return (T) Convert.ChangeType(val, typeof(T));
+            }
+            catch (UnknownPairException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Can not convert {0} to {1}", data[section][parameter], typeof(T));
+            }
+
+            return default;
         }
     }
 }
