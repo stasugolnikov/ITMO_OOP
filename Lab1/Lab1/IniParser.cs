@@ -41,27 +41,10 @@ namespace Lab1
             return regex.IsMatch(str);
         }
 
-        private void TryParseLine(string line, out string[] strs)
+        private void ParseLine(string line, out string[] strs)
         {
             RemoveComments(ref line);
-            string[] words = line.Split(new[] {' ', '='}, StringSplitOptions.RemoveEmptyEntries);
-            strs = new string[] { };
-
-            if (words.Length == 0) return;
-
-            if (words.Length == 1 && CheckValidSection(words[0]))
-            {
-                strs = words;
-                return;
-            }
-
-            if (words.Length == 2 && CheckValidParameter(words[0]) && CheckValidValue(words[1]))
-            {
-                strs = words;
-                return;
-            }
-
-            throw new InvalidFormatException("Ini file format error in line: " + words[0]);
+            strs = line.Split(new[] {' ', '='}, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void ParseIniFile(string FilePath)
@@ -83,23 +66,23 @@ namespace Lab1
                 string section = "";
                 while ((line = file.ReadLine()) != null)
                 {
-                    TryParseLine(line, out string[] strs);
-                    if (strs.Length == 1)
+                    ParseLine(line, out string[] strs);
+                    if (strs.Length == 0) continue;
+                    if (CheckValidSection(strs[0]))
                     {
                         section = strs[0].Substring(1, strs[0].Length - 2);
                         data[section] = new Dictionary<string, string>();
                     }
-
-                    if (strs.Length == 2)
+                    else
                     {
-                        if (String.IsNullOrEmpty(section))
-                        {
-                            throw new InvalidFormatException("Ini file format error");
-                        }
-                        else
+                        if (strs.Length > 1 && CheckValidParameter(strs[0]) && CheckValidValue(strs[1]) &&
+                            !String.IsNullOrEmpty(section))
                         {
                             data[section][strs[0]] = strs[1];
+                            continue;
                         }
+
+                        throw new InvalidFormatException("Ini file format error in line " + line);
                     }
                 }
             }
@@ -109,36 +92,38 @@ namespace Lab1
             }
         }
 
-        private void TryGetValue(string section, string parameter, out string ans)
+        private bool TryGetValue(string section, string parameter, out string ans)
         {
-            try
+            if (data.ContainsKey(section) && data[section].ContainsKey(parameter))
             {
                 ans = data[section][parameter];
+                return true;
             }
-            catch (Exception)
+            else
             {
                 ans = default;
-                throw new UnknownPairException("Pair '" + section + "' '" + parameter + "' does not exists");
+                return false;
             }
         }
 
         public T Get<T>(string section, string parameter)
         {
-            try
+            if (TryGetValue(section, parameter, out string val))
             {
-                TryGetValue(section, parameter, out string val);
-                return (T) Convert.ChangeType(val, typeof(T));
+                try
+                {
+                    return (T) Convert.ChangeType(val, typeof(T));
+                }
+                catch (FormatException)
+                {
+                    throw new FormatException("Can not convert " + data[section][parameter] + " to " + typeof(T));
+                }
             }
-            catch (UnknownPairException ex)
+            else
             {
-                Console.WriteLine(ex.Message);
+                throw new UnknownPairException("Unknown pair '" + section + "' '" + parameter + "' in file");
             }
-            catch (FormatException)
-            {
-                Console.WriteLine("Can not convert {0} to {1}", data[section][parameter], typeof(T));
-            }
-
-            return default;
+           
         }
     }
 }

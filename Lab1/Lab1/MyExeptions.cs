@@ -22,4 +22,10 @@ namespace Lab1
         {
         }
     }
+    public class FormatingException : Exception
+    {
+        public FormatingException(string message) : base(message)
+        {
+        }
+    }
 }
