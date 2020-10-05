@@ -49,46 +49,39 @@ namespace Lab1
 
         public void ParseIniFile(string FilePath)
         {
-            try
+            if (!File.Exists(FilePath))
             {
-                if (!File.Exists(FilePath))
-                {
-                    throw new FileNotFoundException("Unable to find the file: " + FilePath);
-                }
-
-                if (Path.GetExtension(FilePath) != ".ini")
-                {
-                    throw new InvalidFileTypeException("File type must be .ini, not " + Path.GetExtension(FilePath));
-                }
-
-                var file = new StreamReader(FilePath);
-                string line;
-                string section = "";
-                while ((line = file.ReadLine()) != null)
-                {
-                    ParseLine(line, out string[] strs);
-                    if (strs.Length == 0) continue;
-                    if (CheckValidSection(strs[0]))
-                    {
-                        section = strs[0].Substring(1, strs[0].Length - 2);
-                        data[section] = new Dictionary<string, string>();
-                    }
-                    else
-                    {
-                        if (CheckValidParameter(strs[0]) && CheckValidValue(strs[1]) &&
-                            !String.IsNullOrEmpty(section))
-                        {
-                            data[section][strs[0]] = strs[1];
-                            continue;
-                        }
-
-                        throw new InvalidFormatException("Ini file format error in line " + line);
-                    }
-                }
+                throw new FileNotFoundException("Unable to find the file: " + FilePath);
             }
-            catch (Exception ex)
+
+            if (Path.GetExtension(FilePath) != ".ini")
             {
-                Console.WriteLine(ex.Message);
+                throw new InvalidFileTypeException("File type must be .ini, not " + Path.GetExtension(FilePath));
+            }
+
+            var file = new StreamReader(FilePath);
+            string line;
+            string section = "";
+            while ((line = file.ReadLine()) != null)
+            {
+                ParseLine(line, out string[] strs);
+                if (strs.Length == 0) continue;
+                if (CheckValidSection(strs[0]))
+                {
+                    section = strs[0].Substring(1, strs[0].Length - 2);
+                    data[section] = new Dictionary<string, string>();
+                }
+                else
+                {
+                    if (strs.Length > 1 && CheckValidParameter(strs[0]) && CheckValidValue(strs[1]) &&
+                        !String.IsNullOrEmpty(section))
+                    {
+                        data[section][strs[0]] = strs[1];
+                        continue;
+                    }
+
+                    throw new InvalidFormatException("Ini file format error in line " + line);
+                }
             }
         }
 
@@ -123,7 +116,6 @@ namespace Lab1
             {
                 throw new UnknownPairException("Unknown pair '" + section + "' '" + parameter + "' in data");
             }
-           
         }
     }
 }
