@@ -116,12 +116,12 @@ namespace Lab1
                 }
                 catch (FormatException)
                 {
-                    throw new FormatException("Can not convert " + data[section][parameter] + " to " + typeof(T));
+                    throw new FormatingException("Can not convert " + data[section][parameter] + " to " + typeof(T));
                 }
             }
             else
             {
-                throw new UnknownPairException("Unknown pair '" + section + "' '" + parameter + "' in file");
+                throw new UnknownPairException("Unknown pair '" + section + "' '" + parameter + "' in data");
             }
            
         }
