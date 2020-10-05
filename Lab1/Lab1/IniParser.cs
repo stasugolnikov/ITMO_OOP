@@ -75,7 +75,7 @@ namespace Lab1
                     }
                     else
                     {
-                        if (strs.Length > 1 && CheckValidParameter(strs[0]) && CheckValidValue(strs[1]) &&
+                        if (CheckValidParameter(strs[0]) && CheckValidValue(strs[1]) &&
                             !String.IsNullOrEmpty(section))
                         {
                             data[section][strs[0]] = strs[1];
