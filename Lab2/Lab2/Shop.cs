@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace Lab2
 {
-    public class Shop
+    class Shop
     {
         private int _shopID;
 
@@ -18,43 +19,29 @@ namespace Lab2
             get => _name;
         }
 
-        private List<ProductItem> _productItems;
+        private List<Product> _products;
 
         public Shop(int id, string name)
         {
             _shopID = id;
             _name = name;
-            _productItems = new List<ProductItem>();
+            _products = new List<Product>();
         }
 
-        private bool CheckProductExistence(int id)
+        private bool CheckProductExistence(Product product)
         {
-            return _productItems.Exists(product => { return product.ProductID == id; });
+            return _products.Exists(tmp => { return product.ProductID == tmp.ProductID; });
         }
 
-        public void CreateProduct(int id, string name)
+        public void DeliverProducts(Product product, int price, int amount)
         {
-            if (!CheckProductExistence(id))
+            if (!CheckProductExistence(product))
             {
-                _productItems.Add(new ProductItem(id, name));
+                _products.Add(new ProductItem(product, price, amount));
             }
             else
             {
-                // throw ex
-            }
-        }
-
-        public void DeliverProducts(int id, int price, int amount)
-        {
-            if (CheckProductExistence(id))
-            {
-                int pos = _productItems.FindIndex(product => { return product.ProductID == id; });
-                _productItems[pos].Amount = amount;
-                _productItems[pos].Price = price;
-            }
-            else
-            {
-                // throw ex
+                //throw ex
             }
         }
     }
