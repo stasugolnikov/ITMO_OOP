@@ -9,7 +9,6 @@ namespace Lab2
         {
             Product bread = Product.Create(13,"bread");
             Product cheese = Product.Create(14,"cheese");
-            
             Shop shop = new Shop(228,"magaz");
             shop.DeliverProducts(bread, 30, 10);
             shop.DeliverProducts(cheese, 300, 10);
