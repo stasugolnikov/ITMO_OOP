@@ -6,62 +6,44 @@ namespace Lab2
     {
         private List<ProductItem> _productItems;
 
-        private List<ProductItem> ProductItems => _productItems;
+        public List<ProductItem> ProductItems => _productItems;
 
-        private int _shopID;
+        public int ShopID { get; }
 
-        public int ShopID => _shopID;
+        public string Name { get; }
 
-        private string _name;
-
-        public string Name => _name;
-
-        private string _adress;
-
-        public string Adress => _adress;
+        public string Adress { get; }
 
         public Shop(int shopID, string name, string adress)
         {
-            _shopID = shopID;
-            _name = name;
-            _adress = adress;
-            _productItems = ProductItems;
-        }
-
-        public Shop(Shop shop)
-        {
-            _shopID = shop.ShopID;
-            _name = shop.Name;
-            _adress = shop.Adress;
+            ShopID = shopID;
+            Name = name;
+            Adress = adress;
             _productItems = new List<ProductItem>();
         }
-
+        
+        public Shop()
+        {
+            ShopID = default;
+            Name = default;
+            Adress = default;
+            _productItems = new List<ProductItem>();
+        }
+        
         private bool CheckProductExistence(int productID)
         {
             return _productItems.Exists(product => product.ProductID == productID);
         }
 
-        public void AddProduct(int productID, string name)
-        {
-            if (!CheckProductExistence(productID))
-            {
-                _productItems.Add(new ProductItem(productID, name));
-            }
-            else
-            {
-                // throw ex
-            }
-        }
-
-        public void AddProduct(Product product)
+        public void AddProduct(Product product, int price, int amount = 0)
         {
             if (!CheckProductExistence(product.ProductID))
             {
-                _productItems.Add(new ProductItem(product));
+                _productItems.Add(new ProductItem(product, price, amount));
             }
             else
             {
-                // throw ex
+                throw new ExistingProductIDException("Product ID " + product.ProductID + " already exists");
             }
         }
 
@@ -69,24 +51,81 @@ namespace Lab2
         {
             if (!CheckProductExistence(productID))
             {
-                // throw ex
+                throw new NotExistingProductIDException("Product ID " + productID + " do not exists");
             }
 
             int pos = _productItems.FindIndex(product => product.ProductID == productID);
             _productItems[pos].Price = price;
-            _productItems[pos].Amount = amount;
+            _productItems[pos].Amount += amount;
         }
 
         public void DeliverProducts(Product product, int price, int amount)
         {
             if (!CheckProductExistence(product.ProductID))
             {
-                // throw ex
+                throw new NotExistingProductIDException("Product ID " + product.ProductID + " do not exists");
             }
 
             int pos = _productItems.FindIndex(productItem => productItem.ProductID == product.ProductID);
             _productItems[pos].Price = price;
-            _productItems[pos].Amount = amount;
+            _productItems[pos].Amount += amount;
+        }
+
+        public bool TryGetProduct(int productID, out ProductItem product)
+        {
+            if (CheckProductExistence(productID))
+            {
+                product = _productItems.Find(p => p.ProductID == productID);
+                return true;
+            }
+
+            product = default;
+            return false;
+        }
+
+        public List<ProductItem> WhatProductCanBeBought(int moneyAmount)
+        {
+            var productItems = new List<ProductItem>();
+            int pos = 0;
+            foreach (var productItem in _productItems)
+            {
+                int amount = 0;
+                int money = moneyAmount;
+                int ProductAmount = productItem.Amount;
+                while (money >= productItem.Price && ProductAmount > 0)
+                {
+                    amount++;
+                    money -= productItem.Price;
+                    ProductAmount--;
+                }
+        
+                if (amount > 0)
+                {
+                    productItems.Add(productItem);
+                    productItems[pos].Amount = amount;
+                    pos++;
+                }
+            }
+        
+            return productItems;
+        }
+
+        public int BuyProduct(Product product, int amount)
+        {
+            int pos = _productItems.FindIndex(productItem => productItem.ProductID == product.ProductID);
+            if (pos != -1)
+            {
+                if (_productItems[pos].Amount < amount)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return amount * _productItems[pos].Price;
+                }
+            }
+
+            return -1;
         }
     }
 }
