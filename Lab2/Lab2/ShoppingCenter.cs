@@ -78,12 +78,7 @@ namespace Lab2
                 }
             }
 
-            if (resShop != null)
-            {
-                return resShop;
-            }
-
-            throw new UnavaliableBuyProductList("Can not buy products");
+            return resShop;
         }
     }
 }

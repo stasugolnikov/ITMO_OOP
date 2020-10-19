@@ -111,7 +111,7 @@ namespace Lab2
             return productItems;
         }
 
-        public bool TryBuyProduct(Product product, int amount, out int totalCost)
+        private bool TryBuyProduct(Product product, int amount, out int totalCost)
         {
             int pos = _productItems.FindIndex(productItem => productItem.ProductID == product.ProductID);
             if (pos != -1)
