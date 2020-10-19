@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Lab2
@@ -21,7 +22,7 @@ namespace Lab2
             Adress = adress;
             _productItems = new List<ProductItem>();
         }
-        
+
         public Shop()
         {
             ShopID = default;
@@ -29,7 +30,7 @@ namespace Lab2
             Adress = default;
             _productItems = new List<ProductItem>();
         }
-        
+
         private bool CheckProductExistence(int productID)
         {
             return _productItems.Exists(product => product.ProductID == productID);
@@ -98,7 +99,7 @@ namespace Lab2
                     money -= productItem.Price;
                     ProductAmount--;
                 }
-        
+
                 if (amount > 0)
                 {
                     productItems.Add(productItem);
@@ -106,26 +107,56 @@ namespace Lab2
                     pos++;
                 }
             }
-        
+
             return productItems;
         }
 
-        public int BuyProduct(Product product, int amount)
+        public bool TryBuyProduct(Product product, int amount, out int totalCost)
         {
             int pos = _productItems.FindIndex(productItem => productItem.ProductID == product.ProductID);
             if (pos != -1)
             {
                 if (_productItems[pos].Amount < amount)
                 {
-                    return -1;
+                    totalCost = default;
+                    return false;
                 }
                 else
                 {
-                    return amount * _productItems[pos].Price;
+                    totalCost = amount * _productItems[pos].Price;
+                    return true;
                 }
             }
 
-            return -1;
+            totalCost = default;
+            return false;
+        }
+
+        public int BuyProduct(Product product, int amount)
+        {
+            if (!TryBuyProduct(product, amount, out var totalCost))
+            {
+                throw new UnavaliableProduct("Can not buy product " + product.ProductID + " in amount" + amount);
+            }
+
+            return totalCost;
+        }
+
+        public bool TryBuyProductsList(Dictionary<Product, int> ShoppingList, out int total)
+        {
+            int resTotalCost = 0;
+            foreach (var item in ShoppingList)
+            {
+                if (!TryBuyProduct(item.Key, item.Value, out var totalCost))
+                {
+                    total = default;
+                    return false;
+                }
+                resTotalCost += totalCost;
+            }
+
+            total = resTotalCost;
+            return true;
         }
     }
 }

@@ -20,4 +20,17 @@ namespace Lab2
         {
         }
     }
+    public class UnavaliableProduct : Exception
+    {
+        public UnavaliableProduct(string message) : base(message)
+        {
+        }
+    }
+    public class UnavaliableBuyProductList : Exception
+    {
+        public UnavaliableBuyProductList(string message) : base(message)
+        {
+        }
+    }
+    
 }

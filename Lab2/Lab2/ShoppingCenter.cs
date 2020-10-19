@@ -65,30 +65,25 @@ namespace Lab2
         public Shop FindShopWithMinTotalCostOfProducts(Dictionary<Product, int> ShoppingList)
         {
             int bestTotalCost = Int32.MaxValue;
-            var resShop = new Shop();
+            Shop resShop = null;
             foreach (var shop in _shops)
             {
-                int curTotalCost = 0;
-                foreach (var item in ShoppingList)
+                if (shop.TryBuyProductsList(ShoppingList, out var totalCost))
                 {
-                    if (shop.BuyProduct(item.Key, item.Value) == -1)
+                    if (totalCost < bestTotalCost)
                     {
-                        curTotalCost = Int32.MaxValue;
-                        break;
+                        bestTotalCost = totalCost;
+                        resShop = shop;
                     }
-
-                    int pos = shop.ProductItems.FindIndex(product => product.ProductID == item.Key.ProductID);
-                    curTotalCost += item.Value * shop.ProductItems[pos].Price;
-                }
-
-                if (bestTotalCost > curTotalCost)
-                {
-                    bestTotalCost = curTotalCost;
-                    resShop = shop;
                 }
             }
 
-            return resShop;
+            if (resShop != null)
+            {
+                return resShop;
+            }
+
+            throw new UnavaliableBuyProductList("Can not buy products");
         }
     }
 }
