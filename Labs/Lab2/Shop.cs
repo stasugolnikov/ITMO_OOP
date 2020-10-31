@@ -8,7 +8,7 @@ namespace Lab2
         private List<ProductItem> _productItems;
 
         public List<ProductItem> ProductItems => _productItems;
-
+        
         public int ShopID { get; }
 
         public string Name { get; }
