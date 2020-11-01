@@ -1,20 +1,14 @@
-using Lab3.Interfaces;
-
+using Lab3.AbstractClasses;
 
 namespace Lab3.Vehicles
 {
-    public class Mortar : IAirVehicle
+    public class Mortar : AirVehicle
     {
-        public int Speed { get; } = 10;
+        public override int Speed { get; } = 10;
 
-        public double DistanceReducer(double distance)
+        protected override double DistanceReducer(double distance)
         {
             return distance * 0.96;
-        }
-
-        public double DistanceTime(double distance)
-        {
-            return DistanceReducer(distance) / Speed;
         }
     }
 }

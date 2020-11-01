@@ -1,12 +1,12 @@
-using Lab3.Interfaces;
+using Lab3.AbstractClasses;
 
 namespace Lab3.Vehicles
 {
-    public class FlyingCarpert : IAirVehicle
+    public class FlyingCarpert : AirVehicle
     {
-        public int Speed { get; } = 10;
+        public override int Speed { get; } = 10;
 
-        public double DistanceReducer(double distance)
+        protected override double DistanceReducer(double distance)
         {
             if (distance <= 1000)
             {
@@ -25,10 +25,6 @@ namespace Lab3.Vehicles
 
             return distance * 0.95;
         }
-
-        public double DistanceTime(double distance)
-        {
-            return DistanceReducer(distance) / Speed;
-        }
+        
     }
 }

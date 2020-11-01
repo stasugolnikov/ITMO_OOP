@@ -1,14 +1,13 @@
-using System;
-using Lab3.Interfaces;
+using Lab3.AbstractClasses;
 
 namespace Lab3.Vehicles
 {
-    public class FastCamel : IGroundVehicle
+    public class FastCamel : GroundVehicle
     {
-        public int Speed { get; } = 40;
-        public float TimeBeforeRest { get; } = 10;
+        public override int Speed { get; } = 40;
+        protected override double TimeBeforeRest { get; } = 10;
 
-        public double RestDuration(int iteration)
+        protected override double RestDuration(int iteration)
         {
             return iteration switch
             {
@@ -16,19 +15,6 @@ namespace Lab3.Vehicles
                 2 => 6.5,
                 _ => 8
             };
-        }
-
-        public double DistanceTime(double distance)
-        {
-            double time = distance / Speed;
-            int restAmount = Convert.ToInt32(time / TimeBeforeRest);
-            double restTime = 0;
-            for (int i = 0; i < restAmount; i++)
-            {
-                restTime += RestDuration(i);
-            }
-
-            return time + restTime;
         }
     }
 }

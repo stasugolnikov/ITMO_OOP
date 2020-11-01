@@ -1,21 +1,16 @@
 using System;
-using Lab3.Interfaces;
+using Lab3.AbstractClasses;
 
 namespace Lab3.Vehicles
 {
-    public class Broom : IAirVehicle
+    public class Broom : AirVehicle
     {
-        public int Speed { get; } = 10;
+        public override int Speed { get; } = 10;
 
-        public double DistanceReducer(double distance)
+        protected override double DistanceReducer(double distance)
         {
             int amount = Convert.ToInt32(distance / 1000);
             return distance * Math.Pow(0.9, amount);
-        }
-
-        public double DistanceTime(double distance)
-        {
-            return DistanceReducer(distance) / Speed;
         }
     }
 }
