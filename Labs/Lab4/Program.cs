@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Lab4.Enums;
 
 namespace Lab4
 {
@@ -6,7 +10,6 @@ namespace Lab4
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
         }
     }
 }
