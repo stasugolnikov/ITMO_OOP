@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Lab4.Enums;
 
 namespace Lab4.RestorePoints
 {
@@ -23,13 +22,6 @@ namespace Lab4.RestorePoints
         {
             Size += fileCopyInfo.Size;
             FileCopyInfos.Add(fileCopyInfo);
-        }
-
-        public void RemoveFileCopyInfo(FileCopyInfo fileCopyInfo)
-        {
-            Size -= fileCopyInfo.Size;
-            int pos = FileCopyInfos.FindIndex(info => info.FilePath == fileCopyInfo.FilePath);
-            FileCopyInfos.RemoveAt(pos);
         }
     }
 }
