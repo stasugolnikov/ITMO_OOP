@@ -2,15 +2,15 @@ namespace Lab4.PointClearAlgo
 {
     public class SizeLimitClear : AbstractLimitClear
     {
-        private long _limitvalue;
+        private long _limitValue;
         public SizeLimitClear(long size)
         {
-            _limitvalue = size;
+            _limitValue = size;
         }
 
         public override bool IsLimitExceeded(Backup backup)
         {
-            return _limitvalue > backup.Size;
+            return _limitValue < backup.Size;
         }
     }
 }

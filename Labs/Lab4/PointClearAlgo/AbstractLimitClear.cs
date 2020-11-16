@@ -9,7 +9,7 @@ namespace Lab4.PointClearAlgo
         public static bool IsRemovable(Backup backup, RestorePoint restorePoint)
         {
             int pos = backup.RestorePoints.IndexOf(restorePoint);
-            if (backup.RestorePoints.Count != 1 && backup.RestorePoints[pos + 1] is IncRestorePoint)
+            if (backup.RestorePoints.Count > 1 && backup.RestorePoints[pos + 1] is IncRestorePoint)
             {
                 return false;
             }
@@ -20,18 +20,18 @@ namespace Lab4.PointClearAlgo
 
         public void Clear(Backup backup)
         {
-            foreach (var restorePoint in backup.RestorePoints)
+            for (int i = 0; i < backup.RestorePoints.Count; i++)
             {
-                if (!IsLimitExceeded(backup))
+                if (IsLimitExceeded(backup))
                 {
-                    break;
-                }
-
-                if (!IsRemovable(backup, restorePoint))
-                {
+                    if (IsRemovable(backup, backup.RestorePoints[i]))
+                    {
+                        backup.RemoveRestorePoint(backup.RestorePoints[i]);
+                        i--;
+                        continue;
+                    }
                     throw new NotRemovablePointException("Try to remove not removable point");
                 }
-                backup.RemoveRestorePoint(restorePoint);
             }
         }
     }

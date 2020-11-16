@@ -4,24 +4,25 @@ namespace Lab4.PointClearAlgo
 {
     public class HybridLimitClear
     {
-        public List<AmountLimitClear> PointClearAlgorithms { get; }
+        public List<AbstractLimitClear> PointClearAlgorithms { get; }
 
-        public HybridLimitClear(List<AmountLimitClear> pointClearAlgorithms)
+        public HybridLimitClear(List<AbstractLimitClear> pointClearAlgorithms)
         {
             PointClearAlgorithms = pointClearAlgorithms;
         }
 
         public void AtLeastOneLimintsExceededClear(Backup backup)
         {
-            foreach (var restorePoint in backup.RestorePoints)
+            for (int i = 0; i < backup.RestorePoints.Count; i++)
             {
                 foreach (var algorithm in PointClearAlgorithms)
                 {
                     if (algorithm.IsLimitExceeded(backup))
                     {
-                        if (AbstractLimitClear.IsRemovable(backup, restorePoint))
+                        if (AbstractLimitClear.IsRemovable(backup, backup.RestorePoints[i]))
                         {
-                            backup.RemoveRestorePoint(restorePoint);
+                            backup.RemoveRestorePoint(backup.RestorePoints[i]);
+                            i--;
                             break;
                         }
                         throw new NotRemovablePointException("Try to remove not removable point");
@@ -32,7 +33,7 @@ namespace Lab4.PointClearAlgo
 
         public void AllLimintsExceededClear(Backup backup)
         {
-            foreach (var restorePoint in backup.RestorePoints)
+            for (int i = 0; i < backup.RestorePoints.Count; i++)
             {
                 bool to_delete = true;
                 foreach (var algorithm in PointClearAlgorithms)
@@ -44,9 +45,9 @@ namespace Lab4.PointClearAlgo
                     }
                 }
 
-                if (to_delete && AbstractLimitClear.IsRemovable(backup, restorePoint))
+                if (to_delete && AbstractLimitClear.IsRemovable(backup, backup.RestorePoints[i]))
                 {
-                    backup.RemoveRestorePoint(restorePoint);
+                    backup.RemoveRestorePoint(backup.RestorePoints[i]);
                     continue;
                 }
                 throw new NotRemovablePointException("Try to remove not removable point");

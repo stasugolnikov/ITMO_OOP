@@ -10,7 +10,7 @@ namespace Lab4.PointClearAlgo
 
         public override bool IsLimitExceeded(Backup backup)
         {
-            return _limitValue > backup.RestorePoints.Count;
+            return _limitValue < backup.RestorePoints.Count;
         }
     }
 }
