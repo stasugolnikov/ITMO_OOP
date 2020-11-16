@@ -2,9 +2,13 @@ using System.Collections.Generic;
 
 namespace Lab4.PointClearAlgo
 {
-    public class HybridLimitClear
+    public class HybridLimitClear : AbstractLimitClear
     {
         public List<AbstractLimitClear> PointClearAlgorithms { get; }
+        public override bool IsLimitExceeded(Backup backup)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public HybridLimitClear(List<AbstractLimitClear> pointClearAlgorithms)
         {
@@ -19,7 +23,7 @@ namespace Lab4.PointClearAlgo
                 {
                     if (algorithm.IsLimitExceeded(backup))
                     {
-                        if (AbstractLimitClear.IsRemovable(backup, backup.RestorePoints[i]))
+                        if (IsRemovable(backup, backup.RestorePoints[i]))
                         {
                             backup.RemoveRestorePoint(backup.RestorePoints[i]);
                             i--;
@@ -45,7 +49,7 @@ namespace Lab4.PointClearAlgo
                     }
                 }
 
-                if (to_delete && AbstractLimitClear.IsRemovable(backup, backup.RestorePoints[i]))
+                if (to_delete && IsRemovable(backup, backup.RestorePoints[i]))
                 {
                     backup.RemoveRestorePoint(backup.RestorePoints[i]);
                     i--;

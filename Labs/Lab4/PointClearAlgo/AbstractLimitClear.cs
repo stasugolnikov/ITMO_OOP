@@ -6,7 +6,7 @@ namespace Lab4.PointClearAlgo
     {
         public abstract bool IsLimitExceeded(Backup backup);
 
-        public static bool IsRemovable(Backup backup, RestorePoint restorePoint)
+        public  bool IsRemovable(Backup backup, RestorePoint restorePoint)
         {
             int pos = backup.RestorePoints.IndexOf(restorePoint);
             if (backup.RestorePoints.Count > 1 && backup.RestorePoints[pos + 1] is IncRestorePoint)

@@ -9,10 +9,9 @@ namespace Lab4.RestorePoints
         {
         }
 
-        protected override FileCopyInfo CreateFileCopyInfo(string filePath)
+        protected override FileCopyInfo CreateFileCopyInfo(string filePath, long size)
         {
-            var fileInfo = new FileInfo(filePath);
-            return new FileCopyInfo(filePath, Convert.ToInt64(fileInfo.Length * 0.9), DateTime.Now);
+            return new FileCopyInfo(filePath, size, DateTime.Now);
         }
     }
 }

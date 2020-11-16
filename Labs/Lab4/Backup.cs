@@ -24,12 +24,14 @@ namespace Lab4
         }
 
         public List<RestorePoint> RestorePoints { get; }
+        public List<string> FilesPath { get; }
 
-        public Backup(int id, DateTime dateTime)
+        public Backup(int id, List<string> filesPath, DateTime dateTime)
         {
             Id = id;
             CreationTime = dateTime;
             RestorePoints = new List<RestorePoint>();
+            FilesPath = filesPath;
         }
 
         public void AddRestorePoint(RestorePoint restorePoint)
@@ -39,8 +41,40 @@ namespace Lab4
 
         public void RemoveRestorePoint(RestorePoint restorePoint)
         {
-
             RestorePoints.Remove(restorePoint);
+        }
+
+        public void AddFilePath(string filePath)
+        {
+            FilesPath.Add(filePath);
+        }
+
+        public void RemoveFilePath(string filePath)
+        {
+            FilesPath.Remove(filePath);
+        }
+
+        public FullRestorePoint CreateFullRestorePoint()
+        {
+           var restorePoint = new FullRestorePoint(DateTime.Now);
+           RestorePoints.Add(restorePoint);
+           return restorePoint;
+        }
+        
+        public IncRestorePoint CreateIncRestorePoint()
+        {
+            var restorePoint = new IncRestorePoint(DateTime.Now);
+            RestorePoints.Add(restorePoint);
+            return restorePoint;
+        }
+
+        public void SaveRestorePointToFolder(RestorePoint restorePoint)
+        {
+            restorePoint.SaveToFolder(FilesPath);
+        }
+        public void SaveRestorePointToArchive(RestorePoint restorePoint)
+        {
+            restorePoint.SaveToArchive(FilesPath);
         }
     }
 }

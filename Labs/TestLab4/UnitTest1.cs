@@ -12,42 +12,45 @@ namespace TestLab4
         [Test]
         public void TestAmount()
         {
+            List<string> files = new List<string>();
             FileCopyInfo fileCopyInfo1 = new FileCopyInfo("path1", 100, DateTime.Now);
             FileCopyInfo fileCopyInfo2 = new FileCopyInfo("path2", 250, DateTime.Now);
-            
+
             RestorePoint restorePoint1 = new FullRestorePoint(DateTime.Now);
             restorePoint1.AddFileCopyInfo(fileCopyInfo1);
             restorePoint1.AddFileCopyInfo(fileCopyInfo2);
-            
-            Backup backup = new Backup(123, DateTime.Now);
+
+            Backup backup = new Backup(123, files, DateTime.Now);
             backup.AddRestorePoint(restorePoint1);
-            
+
             Assert.AreEqual(2, backup.RestorePoints[0].FileCopyInfos.Count);
-            
+
             RestorePoint restorePoint2 = new FullRestorePoint(DateTime.Now);
             restorePoint2.AddFileCopyInfo(fileCopyInfo1);
             restorePoint2.AddFileCopyInfo(fileCopyInfo2);
-            
+
             backup.AddRestorePoint(restorePoint2);
             AmountLimitClear amountLimitClear = new AmountLimitClear(1);
             amountLimitClear.Clear(backup);
             Assert.AreEqual(1, backup.RestorePoints.Count);
         }
-        
+
         [Test]
         public void TestSize()
         {
+            List<string> files = new List<string>();
+
             FileCopyInfo fileCopyInfo1 = new FileCopyInfo("path1", 100, DateTime.Now);
             FileCopyInfo fileCopyInfo2 = new FileCopyInfo("path2", 100, DateTime.Now);
-            
+
             RestorePoint restorePoint1 = new FullRestorePoint(DateTime.Now);
             restorePoint1.AddFileCopyInfo(fileCopyInfo1);
             restorePoint1.AddFileCopyInfo(fileCopyInfo2);
-            
-            Backup backup = new Backup(123, DateTime.Now);
+
+            Backup backup = new Backup(123, files, DateTime.Now);
             backup.AddRestorePoint(restorePoint1);
             Assert.AreEqual(200, backup.Size);
-            
+
             RestorePoint restorePoint2 = new FullRestorePoint(DateTime.Now);
             restorePoint2.AddFileCopyInfo(fileCopyInfo1);
             restorePoint2.AddFileCopyInfo(fileCopyInfo2);
@@ -57,14 +60,16 @@ namespace TestLab4
             SizeLimitClear sizeLimitClear = new SizeLimitClear(250);
             sizeLimitClear.Clear(backup);
             Assert.AreEqual(1, backup.RestorePoints.Count);
-
         }
+
         [Test]
         public void TestHybrid()
         {
+            List<string> files = new List<string>();
+
             FileCopyInfo fileCopyInfo1 = new FileCopyInfo("path1", 100, DateTime.Now);
             FileCopyInfo fileCopyInfo2 = new FileCopyInfo("path2", 100, DateTime.Now);
-            
+
             RestorePoint restorePoint1 = new FullRestorePoint(DateTime.Now);
             restorePoint1.AddFileCopyInfo(fileCopyInfo1);
             restorePoint1.AddFileCopyInfo(fileCopyInfo2);
@@ -74,13 +79,12 @@ namespace TestLab4
             RestorePoint restorePoint3 = new FullRestorePoint(DateTime.Now);
             restorePoint3.AddFileCopyInfo(fileCopyInfo1);
             restorePoint3.AddFileCopyInfo(fileCopyInfo2);
-            
-            Backup backup = new Backup(123, DateTime.Now);
+
+            Backup backup = new Backup(123, files, DateTime.Now);
             backup.AddRestorePoint(restorePoint1);
             backup.AddRestorePoint(restorePoint2);
             backup.AddRestorePoint(restorePoint3);
 
-            
 
             SizeLimitClear sizeLimitClear = new SizeLimitClear(250);
             AmountLimitClear amountLimitClear = new AmountLimitClear(2);
@@ -91,6 +95,5 @@ namespace TestLab4
             hybridLimitClear.AtLeastOneLimintsExceededClear(backup);
             Assert.AreEqual(1, backup.RestorePoints.Count);
         }
-        
     }
 }
