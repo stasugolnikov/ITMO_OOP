@@ -48,6 +48,7 @@ namespace Lab4.PointClearAlgo
                 if (to_delete && AbstractLimitClear.IsRemovable(backup, backup.RestorePoints[i]))
                 {
                     backup.RemoveRestorePoint(backup.RestorePoints[i]);
+                    i--;
                     continue;
                 }
                 throw new NotRemovablePointException("Try to remove not removable point");
