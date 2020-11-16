@@ -2,15 +2,17 @@ using System;
 
 namespace Lab4.PointClearAlgo
 {
-    public class DateLimitClear : AbstractLimitClear<DateTime>
+    public class DateLimitClear : AbstractLimitClear
     {
-        public DateLimitClear(DateTime dateTime) : base(dateTime)
+        private DateTime _limitValue;
+        public DateLimitClear(DateTime dateTime)
         {
+            _limitValue = dateTime;
         }
 
         public override bool IsLimitExceeded(Backup backup)
         {
-            return LimitValue > backup.RestorePoints[0].CreationTime;
+            return _limitValue > backup.RestorePoints[0].CreationTime;
         }
     }
 }

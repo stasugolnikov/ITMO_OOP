@@ -1,16 +1,22 @@
+using Lab4.RestorePoints;
+
 namespace Lab4.PointClearAlgo
 {
-    public abstract class AbstractLimitClear<T> : ILimitClear
+    public abstract class AbstractLimitClear
     {
-        protected T LimitValue { get; }
+        public abstract bool IsLimitExceeded(Backup backup);
 
-        protected AbstractLimitClear(T limitValue)
+        public static bool IsRemovable(Backup backup, RestorePoint restorePoint)
         {
-            LimitValue = limitValue;
+            int pos = backup.RestorePoints.IndexOf(restorePoint);
+            if (backup.RestorePoints.Count != 1 && backup.RestorePoints[pos + 1] is IncRestorePoint)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-
-        public abstract bool IsLimitExceeded(Backup backup);
 
         public void Clear(Backup backup)
         {
@@ -21,6 +27,10 @@ namespace Lab4.PointClearAlgo
                     break;
                 }
 
+                if (!IsRemovable(backup, restorePoint))
+                {
+                    throw new NotRemovablePointException("Try to remove not removable point");
+                }
                 backup.RemoveRestorePoint(restorePoint);
             }
         }

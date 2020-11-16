@@ -1,14 +1,16 @@
 namespace Lab4.PointClearAlgo
 {
-    public class AmountLimitClear : AbstractLimitClear<int>
+    public class AmountLimitClear : AbstractLimitClear
     {
-        public AmountLimitClear(int amount) : base(amount)
+        private int _limitValue;
+        public AmountLimitClear(int amount)
         {
+            _limitValue = amount;
         }
 
         public override bool IsLimitExceeded(Backup backup)
         {
-            return LimitValue > backup.RestorePoints.Count;
+            return _limitValue > backup.RestorePoints.Count;
         }
     }
 }
