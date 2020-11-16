@@ -8,4 +8,10 @@ namespace Lab4
         {
         }
     }
+    public class UnavaliableIncPointCreation : Exception
+    {
+        public UnavaliableIncPointCreation(string message) : base(message)
+        {
+        }
+    }
 }

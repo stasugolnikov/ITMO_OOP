@@ -6,7 +6,8 @@ namespace Lab4.RestorePoints
     public abstract class RestorePoint
     {
         public DateTime CreationTime { get; }
-
+        public List<FileCopyInfo> FileCopyInfos { get; }
+        
         public long Size
         {
             get
@@ -21,38 +22,15 @@ namespace Lab4.RestorePoints
             }
         }
 
-        public List<FileCopyInfo> FileCopyInfos { get; }
-
-        protected abstract FileCopyInfo CreateFileCopyInfo(string fileName, long size);
-
-        public RestorePoint(DateTime dateTime)
+        public RestorePoint(List<FileCopyInfo> fileCopyInfos, DateTime dateTime)
         {
             CreationTime = dateTime;
-            FileCopyInfos = new List<FileCopyInfo>();
+            FileCopyInfos = fileCopyInfos;
         }
 
         public void AddFileCopyInfo(FileCopyInfo fileCopyInfo)
         {
             FileCopyInfos.Add(fileCopyInfo);
-        }
-
-        public void SaveToFolder(List<string> filesPath)
-        {
-            foreach (var filePath in filesPath)
-            {
-                string fileName = System.IO.Path.GetFileName(filePath);
-                FileCopyInfos.Add(CreateFileCopyInfo("Directory\\" + fileName, 100));
-            }
-        }
-
-        public void SaveToArchive(List<string> filesPath)
-        {
-            long archiveSize = 0;
-            foreach (var filePath in filesPath)
-            {
-                archiveSize += CreateFileCopyInfo(filePath, 100).Size;
-            }
-            FileCopyInfos.Add(CreateFileCopyInfo("Archive", archiveSize));
         }
     }
 }

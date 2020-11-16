@@ -1,17 +1,12 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
 
 namespace Lab4.RestorePoints
 {
     public class IncRestorePoint : RestorePoint
     {
-        public IncRestorePoint(DateTime dateTime) : base(dateTime)
+        public IncRestorePoint(List<FileCopyInfo> fileCopyInfos, DateTime dateTime) : base(fileCopyInfos, dateTime)
         {
-        }
-
-        protected override FileCopyInfo CreateFileCopyInfo(string filePath, long size)
-        {
-            return new FileCopyInfo(filePath, size, DateTime.Now);
         }
     }
 }

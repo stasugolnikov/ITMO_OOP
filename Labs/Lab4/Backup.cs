@@ -54,27 +54,5 @@ namespace Lab4
             FilesPath.Remove(filePath);
         }
 
-        public FullRestorePoint CreateFullRestorePoint()
-        {
-           var restorePoint = new FullRestorePoint(DateTime.Now);
-           RestorePoints.Add(restorePoint);
-           return restorePoint;
-        }
-        
-        public IncRestorePoint CreateIncRestorePoint()
-        {
-            var restorePoint = new IncRestorePoint(DateTime.Now);
-            RestorePoints.Add(restorePoint);
-            return restorePoint;
-        }
-
-        public void SaveRestorePointToFolder(RestorePoint restorePoint)
-        {
-            restorePoint.SaveToFolder(FilesPath);
-        }
-        public void SaveRestorePointToArchive(RestorePoint restorePoint)
-        {
-            restorePoint.SaveToArchive(FilesPath);
-        }
     }
 }

@@ -5,9 +5,18 @@ namespace Lab4.PointClearAlgo
     public class HybridLimitClear : AbstractLimitClear
     {
         public List<AbstractLimitClear> PointClearAlgorithms { get; }
+
         public override bool IsLimitExceeded(Backup backup)
         {
-            throw new System.NotImplementedException();
+            foreach (var algorithm in PointClearAlgorithms)
+            {
+                if (algorithm.IsLimitExceeded(backup))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public HybridLimitClear(List<AbstractLimitClear> pointClearAlgorithms)
@@ -29,6 +38,7 @@ namespace Lab4.PointClearAlgo
                             i--;
                             break;
                         }
+
                         throw new NotRemovablePointException("Try to remove not removable point");
                     }
                 }
@@ -55,6 +65,7 @@ namespace Lab4.PointClearAlgo
                     i--;
                     continue;
                 }
+
                 throw new NotRemovablePointException("Try to remove not removable point");
             }
         }
