@@ -47,7 +47,7 @@ namespace TestLab4
             List<AbstractLimitClear> cleaners = new List<AbstractLimitClear>()
                 {new AmountLimitClear(1), new SizeLimitClear(400)};
 
-            HybridLimitClear cleaner = new HybridLimitClear(cleaners);
+            HybridAllLimitClear cleaner = new HybridAllLimitClear(cleaners);
             cleaner.Clear(backup);
             Assert.AreEqual(300, backup.Size);
         }
