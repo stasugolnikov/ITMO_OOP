@@ -13,7 +13,8 @@ namespace Lab5.Bank
         public int CreditLimit { get; }
         public double NotCertifiedClientLimit { get; }
         public List<Operation> Operations { get; }
-        public Dictionary<Client, List<Account>> ClientAccounts { get; }
+        public List<Client> Clients { get; }
+        public Dictionary<int, List<Account>> ClientIdAccounts { get; }
         
         public BankConfig(double debitPercentage, List<(int, double)> depositPercentages,
             double creditComission, int creditLimit, double notCertifiedClientLimit)
@@ -25,7 +26,8 @@ namespace Lab5.Bank
             CreditLimit = creditLimit;
             NotCertifiedClientLimit = notCertifiedClientLimit;
             Operations = new List<Operation>();
-            ClientAccounts = new Dictionary<Client, List<Account>>();
+            Clients = new List<Client>();
+            ClientIdAccounts = new Dictionary<int, List<Account>>();
         }
 
     }

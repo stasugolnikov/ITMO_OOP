@@ -2,35 +2,38 @@ namespace Lab5.ClientCreation
 {
     public class ClientBuilder : IBuilder
     {
-        private Client _client = new Client();
+        private string _name;
+        private string _surname;
+        private string _adress;
+        private string _passport;
         
         public IBuilder SetName(string name)
         {
-            _client.Name = name;
+            _name = name;
             return this;
         }
 
         public IBuilder SetSurname(string surname)
         {
-            _client.Surname = surname;
+            _surname = surname;
             return this;
         }
 
         public IBuilder SetAdress(string adress)
         {
-            _client.Adress = adress;
+            _adress = adress;
             return this;
         }
 
         public IBuilder SetPassport(string passport)
         {
-            _client.Passport = passport;
+            _passport = passport;
             return this;
         }
 
         public Client Build()
         {
-            return _client;
+            return new Client(_name, _surname, _passport, _adress);
         }
     }
 }

@@ -18,7 +18,11 @@ namespace Lab5.Bank
                 notCertifiedClientLimit);
         }
 
-        public void AddClient(Client client) => BankConfig.ClientAccounts[client] = new List<Account>();
+        public void AddClient(Client client)
+        {
+            BankConfig.Clients.Add(client);
+            BankConfig.ClientIdAccounts[client.Id] = new List<Account>();
+        }
 
         public DebitAccount CreateDebitAccount(int sum)
         {
@@ -49,24 +53,28 @@ namespace Lab5.Bank
 
         public void AddAccount(Client client, Account account)
         {
-            if (!BankConfig.ClientAccounts.ContainsKey(client))
+            if (!BankConfig.ClientIdAccounts.ContainsKey(client.Id))
                 throw new NonExistentIdException("Client Id " + client.Id + " don't exists");
-            BankConfig.ClientAccounts[client].Add(account);
+            BankConfig.ClientIdAccounts[client.Id].Add(account);
         }
 
         private bool CheckClient(Client client) =>
             !String.IsNullOrEmpty(client.Adress) || !String.IsNullOrEmpty(client.Passport);
 
+        private Client GetClient(int id)
+        {
+            return BankConfig.Clients.Find(client => client.Id == id);
+        }
 
         private bool TryGetClientAccount(int id, out Client client, out Account acc)
         {
-            foreach (var clientAccount in BankConfig.ClientAccounts)
+            foreach (var clientAccount in BankConfig.ClientIdAccounts)
             {
                 foreach (var account in clientAccount.Value)
                 {
                     if (account.Id == id)
                     {
-                        client = clientAccount.Key;
+                        client = GetClient(clientAccount.Key);
                         acc = account;
                         return true;
                     }
