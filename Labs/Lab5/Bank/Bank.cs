@@ -121,7 +121,7 @@ namespace Lab5.Bank
         public void UndoOperation(int id)
         {
             int pos = BankConfig.Operations.FindIndex(operation => operation.Id == id);
-            if (pos == -1) /* throw ex */ ;
+            if (pos == -1) throw new NonExistentIdException("Operation Id " + id + " don't exists");
             BankConfig.Operations[pos].UndoOperation();
         }
     }
